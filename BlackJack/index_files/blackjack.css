@@ -109,7 +109,7 @@
 	width: 100%;
 	overflow: visible;
 	position: absolute;
-	z-index:0;
+	z-index:50;
 }
 #Cards{
 	position:absolute;	
