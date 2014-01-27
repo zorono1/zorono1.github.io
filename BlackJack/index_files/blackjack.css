@@ -13,8 +13,7 @@
 	background-image:url(../img/Actions.png);
 }
 .Chip{
-	position:absolute;
-	
+	position:absolute;   	
 	width:63px;
 	height:60px;
 	
@@ -71,7 +70,7 @@
 	margin-left:-450px;
 	margin-top:510px;
 	display:block;
-	font-size: 28px;
+	font-size: 40px;
 	opacity:0.75;
 	text-align:left;
 	overflow:visible;
@@ -104,12 +103,12 @@
 	background-attachment:scroll;
 	background-image: url(../img/Table.png);
 	background-repeat: no-repeat;
-	background-position: top center;
+	background-position: top Center;
 	height: 500px;
 	width: 100%;
 	overflow: visible;
 	position: absolute;
-	z-index:50;
+	z-index:15;
 }
 #Cards{
 	position:absolute;	
@@ -136,7 +135,7 @@
 #Dealer{
 	background-image:url(../img/Dealer.png);
 	background-position:center center;
-	left:50%;
+	left:60%;
 	top:25px;
 	margin-left:-34.5px;
 	
@@ -208,8 +207,8 @@
 
 #Player{
 	background-image:url(../img/Player.png);
-	left:50%;
-	top:250px;
+	left:60%;
+	top:200px;
 	margin-left:-34.5px;
 }
 .Score{
@@ -222,9 +221,9 @@
 	
 	display:none;
 	position:absolute;
-	top:112px;
+	top:100px;
 	left:25px;
-	font-size:10px;
+	font-size:30px;
 	text-align:center;
 }
 .Wager{
@@ -234,23 +233,18 @@
 	-webkit-border-radius:18px;
 	width:24px;
 	height:24px;
-	
-	
 	display:block;
 	position:absolute;
-	top:-27.5px;
-	left:-27.5px;
-	
-	
-	z-index:10;
+	top:-60px;
+	left:-60px;
 }
 .Payout{
 	border:1px #FFF solid;
 	
-	-moz-border-radius:18px;
-	-webkit-border-radius:18px;
-	width:24px;
-	height:24px;
+	-moz-border-radius:36px;
+	-webkit-border-radius:36px;
+	width:63px;
+	height:60px;
 	
 	
 	display:block;
@@ -262,32 +256,38 @@
 	z-index:10;
 }
 .ChipSm{
-	width:24px;
-	height:24px;
+	
+	width:63px;
+	height:60px;
 	display:block;
 	
 	position:absolute;
-	background-image:url(../img/Chips_sm.png);	
+	background-image:url(../img/Chips.png);	
 }
 .ChipSm.Bet5{
 	background-position:0px 0px;
-	
+	height:250%;
+	width:250%;
 }
 .ChipSm.Bet25{
-	background-position:-28px 0px;
-	
+	background-position:-66px 0px;
+	height:250%;
+	width:250%;
 }
 .ChipSm.Bet50{
-	background-position:-55px 0px;
-	
+	background-position:-130px 0px;
+	height:250%;
+	width:250%;
 }
 .ChipSm.Bet100{
-	background-position:-83px 0px;
-	
+	background-position:-197px 0px;
+	height:250%;
+	width:250%;
 }
 .ChipSm.Bet500{
-	background-position:-110px 0px;
-	
+	background-position:-262px 0px;
+	height:250%;
+	width:250%;
 }
 .PlusMinus{
 	font-size:18px;
