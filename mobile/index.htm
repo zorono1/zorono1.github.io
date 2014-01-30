@@ -1,28 +1,314 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>HTML5 Shaking Mobile</title>
-<script type="text/javascript">
-var color = new Array('#fff', '#ff0', '#f00', '#000', '#00f', '#0ff');
-if(window.DeviceMotionEvent) {
-	var speed = 25;
-	var x = y = z = lastX = lastY = lastZ = 0;
-	window.addEventListener('devicemotion', function(){
-		var acceleration =event.accelerationIncludingGravity;
-		x = acceleration.x;
-		y = acceleration.y;
-		if(Math.abs(x-lastX) > speed || Math.abs(y-lastY) > speed) {
-			document.body.style.backgroundColor = color[Math.round(Math.random()*10)%6];
-		}
-		lastX = x;
-		lastY = y;
-	}, false);
-}
-</script>
+<title>HTML5 canvas 跑动的小人</title>
 </head>
-<body>
-HTML 5 Shaking Your Phone。
+<body orient="landspace">
+<canvas id="demo" style="border:1px solid #ddd;">您的浏览器不支持canvas标签。</canvas>
+<script  type="text/javascript">
+
+var mywidth = 32;
+var myheight = 48;
+var eventjs = {
+	//添加事件
+	bind: function(elem, type, handler){
+		if (elem.addEventListener) {
+			elem.addEventListener(type, handler, false);
+		} else if(elem.attachEvent){
+			//IE
+			elem.attachEvent("on" + type, handler);
+		}else{
+			elem["on" + type] = handler;
+		};
+	},
+	//删除事件
+	unbind: function(elem, type ,handler){
+		if (elem.removeEventListener) {
+			elem.removeEventListener(type, handler, false);
+		} else if(elem.detachEvent){
+			//IE
+			elem.detachEvent("on" + type, handler)
+		}else{
+			elem["on" + type] = handler;
+		};
+	},
+	//获取事件
+	getEvent: function(event){
+		return event ? event : window.event;
+	},
+	//获取事件目标
+	getTarget: function(event){
+		return event.target || event.srcElement;
+	},
+	//相关元素
+	relatedTarget: function(event){
+		if (event.relatedTarget) {
+			return event.relatedTarget;
+		} else if (event.toElement){
+			return event.toElement;
+		} else if (event.formElement) {
+			return event.formElement;
+		} else {
+			return null;
+		};
+	},
+	//阻止默认行为
+	preventDefault: function(event){
+		if(event.preventDefault){
+			event.preventDefault();
+		}else{
+			event.returnValue = false;
+		}
+	},
+	//取消捕获/冒泡
+	cancelBubble: function(event){
+		if (event.stopPropagation) {
+			event.stopPropagation();
+		} else{
+			event.cancelBubble = true;
+		};
+	},
+	//获取鼠标按钮
+	getMouseButton: function(event){
+		if (document.implementation.hasFeature("MouseEvents", "2.0")) {
+			return event.button;
+		} else{
+			switch (event.button){
+				case 0:
+				case 1:
+				case 3:
+				case 5:
+				case 7:
+					return 0;
+				case 2:
+				case 6:
+					return 2;
+				case 4:
+					return 1;
+			}
+		};
+	},
+	//获取键盘code
+	getCharCode: function(event){
+		if (typeof event.charCode == "number") {
+			console.log('char code');
+			return event.charCode;
+		} else{
+			return event.keyCode;
+		};
+	},
+	getDirection: function(event){
+		var keyCode = event.which || event.keyCode;
+		switch(keyCode){
+			case 1:
+			case 38:
+			case 269: //up
+				return 'up';
+				break;
+			case 2:
+			case 40:
+			case 270:
+				return 'down';
+				break;
+			case 3:
+			case 37:
+			case 271:
+				return 'left';
+				break;
+			case 4:
+			case 39:
+			case 272:
+				return 'right';
+				break;
+			case 339: //exit
+			case 240: //back
+				return 'back';
+				break;
+		}
+	}
+};
+</script>
+<script type="text/javascript">
+(function(){
+    // canvas
+    var canvas = document.getElementById('demo');
+    var ctx = canvas.getContext('2d');
+
+    //player base
+    var playerImage = new Image();
+    playerImage.src = 'P1Walk.png';
+    var player = {
+        x: 400,       // 在canvas中的坐标
+        y: 200,
+        imageX: 0,  // 图像定位坐标
+        imageY: 0,
+        width: mywidth,  // 图像显示区域大小
+        height: myheight,
+        stop: true  // 是否停止
+    };
+
+    function clean () {
+        // clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function playerInit () {
+        // init player
+        playerImage.onload = _drawPlayer;
+    }
+
+    function playerMove (value) {
+        if('right' === value){
+            if (player.stop) {
+                player.imageX += mywidth;
+            }else{
+                player.imageX = 0;
+            }
+            if (player.imageX >= mywidth*4) {
+                player.imageX = 0;
+            };
+            // player move speed
+            player.x += 5;
+            player.imageY = myheight*2;
+
+        } else if ('left' === value){
+            // move left
+            if (player.stop) {
+                player.imageX += mywidth;
+            }else{
+                player.imageX = 0;
+            }
+            if (player.imageX >= mywidth*4) {
+                player.imageX = 0;
+            };
+            player.x -= 5;
+            player.imageY = myheight;
+        } else if ('up' === value){
+            // move up
+            if (player.stop) {
+                player.imageX += mywidth;
+            }else{
+                player.imageX = 0;
+            }
+            if (player.imageX >= mywidth*4) {
+                player.imageX = 0;
+            };
+            player.y -= 5;
+            player.imageY = myheight*3;
+        } else if ('down' === value){
+            // move down
+            if (player.stop) {
+                player.imageX += mywidth;
+            }else{
+                player.imageX = 0;
+            }
+            if (player.imageX >= mywidth*4) {
+                player.imageX = 0;
+            };
+            player.y += 5;
+            player.imageY = 0;
+        };;
+        clean();
+        _drawPlayer();
+    }
+    function playerJump (value) {
+    }
+
+    function _drawPlayer () {
+        ctx.drawImage(playerImage, player.imageX, player.imageY, player.width, player.height, player.x, player.y, player.width, player.height);
+    }
+
+    function playerAction (value) {
+        var posX = 50;
+        var posY = 50;
+        switch(value){
+            case 'up':
+                if (player.y < 5) {
+                    return;
+                };
+                playerMove(value);
+                break;
+            case 'right':
+                posX = player.x + player.width;
+                if (posX >= canvas.width) {
+                    return;
+                };
+                playerMove(value);
+                break;
+            case 'down':
+                posY = player.y + player.height;
+                if (posY >= canvas.height) {
+                    return;
+                };
+                playerMove(value);
+                break;
+            case 'left':
+                if (player.x < 5) {
+                    return;
+                };
+                playerMove(value);
+                break;
+        };
+        return {x: player.x, y: player.y};
+    }
+   
+  window.ondeviceorientation =  function(e) 
+	{
+	
+	    var ang;
+	    var ang2;
+	    var o = window.orientation;  //获取设备方向
+	    if(o == 90){
+	        ang = e.beta;  //设备横向1
+			ang2 = e.gamma;
+	    }
+	    else if(o == -90){
+	        ang = -e.beta;  //设备横向2
+	        ang2 = -e.gamma;
+	        
+	    }
+	    else if(o == 0){
+	        ang = e.gamma;    //设备纵向
+	    	ang2 = -e.beta;
+	    }
+	
+	    if(ang > 5) 
+	    {
+	        playerAction("right");
+	    }
+	    else if(ang < -5) 
+	    {
+	        playerAction("left");
+	    }
+		else if(ang2 > 5) 
+	    {
+	        playerAction("up");
+	    }
+	    else if(ang2 < -5) 
+	    {
+	        playerAction("down");
+	    }
+	    
+	}
+    var init = (function(options){
+        options = options || {};
+        canvas.width = options.width || 500;
+        canvas.height = options.height || 300;
+        playerInit();
+        eventjs.bind(document, 'keydown', function(event){
+            var d = eventjs.getDirection(event);
+            player.stop = true;
+            playerAction(d);
+        });
+        eventjs.bind(document, 'keyup', function(event){
+            var d = eventjs.getDirection(event);
+            player.stop = false;
+            playerAction(d);
+        });
+    })({width:800, height:400});
+
+})();
+
+</script>
 </body>
 </html>
