@@ -1,0 +1,85 @@
+<html><head> 
+ 
+ 
+<title>GLGE</title> 
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+<script type="text/javascript" src="glge-compiled-min.js"></script> 
+<style>
+body{background-color: #000;color: #fff;font-family:arial}
+</style>
+</head><body>
+
+<div style="width:900px;margin:auto;position:relative" id="container">
+<canvas id="canvas" width="500" 
+height="500"></canvas>
+</div>
+</div>
+<script type="text/javascript">
+var doc = new GLGE.Document();
+doc.onLoad=function(){
+//???????
+var gameRenderer=new GLGE.Renderer(document.getElementById('canvas'));
+//????????
+gameScene=new GLGE.Scene();
+gameScene=doc.getElement("mainscene");
+
+//???????
+gameRenderer.setScene(gameScene);
+//??????????
+var mouse=new GLGE.MouseInput(document.getElementById('canvas'));
+var mouseovercanvas;
+var inc=0.2;
+//??????
+function mouselook(){
+	if(mouseovercanvas){
+	//????shux=biao????
+		var mousepos=mouse.getMousePosition();
+		mousepos.x=mousepos.x-document.getElementById("container").offsetLeft;
+		mousepos.y=mousepos.y-document.getElementById("container").offsetTop;
+		//?????????
+		var camera=gameScene.camera;
+		camerarot=camera.getRotation();
+		inc=(mousepos.y-(document.getElementById('canvas').offsetHeight/2))/500;
+		//????,?????x([0,0,-1,1]
+//		var trans=camera.getRotMatrix().x([0,0,-1,1]);
+		var trans=GLGE.mulMat4Vec4(camera.getRotMatrix(),[0,0,-1,1]);
+		var mag=Math.pow(Math.pow(trans[0],2)+Math.pow(trans[1],2),0.5);
+		trans[0]=trans[0]/mag;
+		trans[1]=trans[1]/mag;
+		camera.setRotX(1.56-trans[1]*inc);
+		camera.setRotZ(-trans[0]*inc);
+		//??canvas???
+		var width=document.getElementById('canvas').offsetWidth;
+		if(mousepos.x<width*0.3){
+			var turn=Math.pow((mousepos.x-width*0.3)/(width*0.3),2)*0.005*(now-lasttime);
+			camera.setRotY(camerarot.y+turn);
+		}
+		if(mousepos.x>width*0.7){
+			var turn=Math.pow((mousepos.x-width*0.7)/(width*0.3),2)*0.005*(now-lasttime);
+			camera.setRotY(camerarot.y-turn);
+		}
+	}
+}
+
+var lasttime=0;
+var frameratebuffer=60;
+
+var now;
+//??
+function render(){
+    now=parseInt(new Date().getTime());
+	    frameratebuffer=Math.round(((frameratebuffer*9)+1000/(now-lasttime))/10);
+    mouselook();
+	gameRenderer.render();
+   lasttime=now;
+}
+setInterval(render,1);
+
+
+document.getElementById("canvas").onmouseover=function(e){mouseovercanvas=true;}
+document.getElementById("canvas").onmouseout=function(e){mouseovercanvas=false;}
+}
+doc.load("level.xml");
+</script>
+
+</body></html>
