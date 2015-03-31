@@ -181,10 +181,8 @@
 				renderer.setSize( window.innerWidth, window.innerHeight );
 
 			}
-			function onDocumentMouseDown( event ) {
-		
-				event.preventDefault();
-				mouseDown = true;
+			function onClickArea()
+			{
 				//interactive
 				raycaster.setFromCamera( mouse, cameraCube );
 				
@@ -192,7 +190,12 @@
 				if ( intersects.length > 0 ) {
 						if(showRain == true) {showRain = false;}else{showRain = true;}				
 					}
- 				
+			}
+			function onDocumentMouseDown( event ) {
+		
+				event.preventDefault();
+				mouseDown = true;
+				onClickArea();
 			}
 
 			function onDocumentMouseMove( event ) {
@@ -228,7 +231,9 @@
 
 				touchX = touch.screenX;
 				touchY = touch.screenY;
-
+				mouse.x = touchX;
+				mouse.y = touchY;
+				onClickArea();
 			}
 
 			function onDocumentTouchMove( event ) {
