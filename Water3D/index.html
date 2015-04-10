@@ -63,7 +63,7 @@
 			var lon = -90, lat = 0;
 			var phi = 0, theta = 0;
 			var oa,ob,og,oamove,obmove,ogmove;
-			var da = 90,db = 0, dg =90;
+			var da = 180,db = 90, dg =90;
 			var touchX, touchY;
 			var target = new THREE.Vector3();			
 			
@@ -179,8 +179,8 @@
 				oamove = oa - da;
 				obmove = ob - db;
 				ogmove = og - dg;
-				lat = oamove;
-				lon = ogmove*-1;
+				lon = oamove;
+				lat = ogmove;
 			}
 
 			function onWindowResize() {
