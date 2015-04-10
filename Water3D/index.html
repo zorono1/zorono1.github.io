@@ -60,9 +60,10 @@
 			var directionalLight, pointLight;
 			var mouse = new THREE.Vector2(), INTERSECTED;
 			var mouseX = 0, mouseY = 0;
-			var lon = 90, lat = 0;
+			var lon = -90, lat = 0;
 			var phi = 0, theta = 0;
-
+			var oa,ob,og,oamove,obmove,ogmove;
+			var da = 90,db = 0, dg =90;
 			var touchX, touchY;
 			var target = new THREE.Vector3();			
 			
@@ -163,8 +164,23 @@
 				document.addEventListener( 'touchmove', onDocumentTouchMove, false );
 				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 				document.addEventListener( 'mouseup', onDocumentMouseUp, false );
-
+				
+				if (window.DeviceOrientationEvent) {
+					window.addEventListener("deviceorientation", orientationHandler, false);
+				} else {
+					alert("What user agent u r using？？？");
+				};
 				window.addEventListener( 'resize', onWindowResize, false );
+			}
+			function orientationHandler(event) {
+				oa = event.alpha;
+				ob = event.beta;
+				og = event.gamma;
+				oamove = oa - da;
+				obmove = ob - db;
+				ogmove = og - dg;
+				lat = oamove;
+				lon = ogmove*-1;
 			}
 
 			function onWindowResize() {
@@ -273,7 +289,7 @@
 
 				}
 				
-				lon +=  0.01;
+				//lon +=  0.01;
 				lat = Math.max( - 85, Math.min( 85, lat ) );
 				phi = THREE.Math.degToRad( 90 - lat );
 				theta = THREE.Math.degToRad( lon );
